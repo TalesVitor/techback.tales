@@ -30,7 +30,7 @@
 		<java.version>21</java.version>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
 		<!-- Defina a versão do Lombok usada pelo processador de anotações -->
-		<lombok.version>1.18.32</lombok.version>
+		<lombok.version>1.18.38</lombok.version>
 	</properties>
 
 	<dependencyManagement>

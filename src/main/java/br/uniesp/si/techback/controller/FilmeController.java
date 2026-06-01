@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.data.domain.Page;
 
 import java.net.URI;
 import java.util.List;
@@ -25,6 +26,26 @@ public class FilmeController {
     public List<Filme> listarOrdenado() {
         log.info("Listando todos os filmes");
         return filmeService.listarOrdenado();
+    }
+
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<FilmeDTO>> listarPaginado(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        return ResponseEntity.ok(
+                filmeService.listarPaginado(page, size)
+        );
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<FilmeDTO> buscarPorGenero(
+            @RequestParam String genero,
+            @RequestParam String titulo) {
+
+        return ResponseEntity.ok(
+                filmeService.buscarPorGenero(genero, titulo)
+        );
     }
 
     @GetMapping

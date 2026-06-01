@@ -21,6 +21,34 @@ public class FuncionarioService {
         return funcionarioRepository.findAll();
     }
 
+    public Funcionario buscarPorId(Long id) {
+        return funcionarioRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Funcionário não encontrado"));
+    }
+
+    public Funcionario atualizar(Long id, Funcionario funcionario) {
+
+        Funcionario existente = funcionarioRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Funcionário não encontrado"));
+
+        existente.setNome(funcionario.getNome());
+        existente.setCargo(funcionario.getCargo());
+        existente.setCep(funcionario.getCep());
+
+        return incluir(existente);
+    }
+
+    public void excluir(Long id) {
+
+        if (!funcionarioRepository.existsById(id)) {
+            throw new RuntimeException("Funcionário não encontrado");
+        }
+
+        funcionarioRepository.deleteById(id);
+    }
+
     public Funcionario incluir(Funcionario funcionario) {
         if (funcionario.getCep() != null && !funcionario.getCep().isBlank()) {
             String cepLimpo = funcionario.getCep().replaceAll("\\D", "");

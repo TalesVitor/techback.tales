@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,10 +41,6 @@ public class FilmeService {
         }
     }
 
-    /**
-     * @param id o ID do filme.
-     * @return o filme encontrado, ou lança uma exceção {@link RuntimeException} se o filme não existir.
-     */
     public FilmeDTO buscarPorId(Long id) {
         log.info("Buscando filme pelo ID: {}", id);
         Filme filme = filmeRepository.findById(id)
@@ -55,78 +53,61 @@ public class FilmeService {
                     log.warn(mensagem);
                     return new RuntimeException(mensagem);
                 });
+
         return filmeMapper.toDTO(filme);
     }
 
-    /**
-     * Atualiza um filme existente.
-     *
-     * @param id    o ID do filme a ser atualizado.
-     * @param filme o filme com as informações atualizadas.
-     * @return o filme atualizado.
-     */
     @Transactional
     public FilmeDTO atualizar(Long id, FilmeDTO filmeDTO) {
         log.info("Atualizando filme ID: {}", id);
+
         Filme filmeAtualizado = filmeRepository.findById(id)
                 .map(filmeExistente -> {
-                    log.debug("Dados atuais do filme: {}", filmeExistente);
-                    log.debug("Novos dados: {}", filmeDTO);
                     filmeDTO.setId(id);
                     Filme filmeParaAtualizar = filmeMapper.toEntity(filmeDTO);
-                    Filme filmeSalvo = filmeRepository.save(filmeParaAtualizar);
-                    log.info("Filme ID: {} atualizado com sucesso. Novo título: {}",
-                            id, filmeSalvo.getTitulo());
-                    return filmeSalvo;
+                    return filmeRepository.save(filmeParaAtualizar);
                 })
-                .orElseThrow(() -> {
-                    String mensagem = String.format("Falha ao atualizar: filme não encontrado com o ID: %d", id);
-                    log.warn(mensagem);
-                    return new RuntimeException(mensagem);
-                });
+                .orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+
         return filmeMapper.toDTO(filmeAtualizado);
     }
 
-    /**
-     * Salva um novo filme.
-     *
-     * @param filme o filme a ser salvo.
-     * @return o filme salvo.
-     */
     @Transactional
     public FilmeDTO salvar(FilmeDTO filmeDTO) {
         log.info("Salvando novo filme: {}", filmeDTO.getTitulo());
-        try {
-            Filme filme = filmeMapper.toEntity(filmeDTO);
-            Filme filmeSalvo = filmeRepository.save(filme);
-            log.info("Filme salvo com sucesso. ID: {}, Título: {}", filmeSalvo.getId(), filmeSalvo.getTitulo());
-            return filmeMapper.toDTO(filmeSalvo);
-        } catch (Exception e) {
-            log.error("Falha ao salvar filme '{}': {}", filmeDTO.getTitulo(), e.getMessage(), e);
-            throw e;
-        }
+
+        Filme filme = filmeMapper.toEntity(filmeDTO);
+        Filme filmeSalvo = filmeRepository.save(filme);
+
+        return filmeMapper.toDTO(filmeSalvo);
     }
 
-    /**
-     * Exclui um filme existente.
-     *
-     * @param id o ID do filme a ser excluído.
-     */
     @Transactional
     public void excluir(Long id) {
-        log.info("Excluindo filme ID: {}", id);
+
         if (!filmeRepository.existsById(id)) {
-            String mensagem = String.format("Falha ao excluir: filme não encontrado com o ID: %d", id);
-            log.warn(mensagem);
-            throw new RuntimeException(mensagem);
+            throw new RuntimeException("Filme não encontrado");
         }
-        try {
-            filmeRepository.deleteById(id);
-            log.info("Filme ID: {} excluído com sucesso", id);
-        } catch (Exception e) {
-            log.error("Erro ao excluir filme ID {}: {}", id, e.getMessage(), e);
-            throw e;
-        }
+
+        filmeRepository.deleteById(id);
     }
 
+    // MÉTODO DE PAGINAÇÃO
+    public Page<FilmeDTO> listarPaginado(int page, int size) {
+
+        return filmeRepository
+                .findAll(PageRequest.of(page, size))
+                .map(filmeMapper::toDTO);
+    }
+
+    public FilmeDTO buscarPorGenero(String genero, String titulo) {
+
+        Filme filme = filmeRepository.buscarPorGenero(genero, titulo);
+
+        if (filme == null) {
+            throw new RuntimeException("Filme não encontrado");
+        }
+
+        return filmeMapper.toDTO(filme);
+    }
 }

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,9 +26,39 @@ public class FuncionarioController {
         return funcionarioService.listar();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Funcionario> buscarPorId(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                funcionarioService.buscarPorId(id)
+        );
+    }
+
     @PostMapping
-    public Funcionario incluir(@RequestBody Funcionario funcionario) {
+    public Funcionario incluir(
+            @Valid @RequestBody Funcionario funcionario) {
+
         return funcionarioService.incluir(funcionario);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Funcionario> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody Funcionario funcionario) {
+
+        return ResponseEntity.ok(
+                funcionarioService.atualizar(id, funcionario)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(
+            @PathVariable Long id) {
+
+        funcionarioService.excluir(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
 
