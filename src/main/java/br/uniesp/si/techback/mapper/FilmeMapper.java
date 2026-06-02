@@ -6,8 +6,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FilmeMapper {
 
+public class FilmeMapper {
     private final ModelMapper modelMapper;
 
     public FilmeMapper(ModelMapper modelMapper) {

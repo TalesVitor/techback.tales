@@ -11,4 +11,3 @@ public interface ViaCepClient {
     @GetMapping("/{cep}/json/")
     ViaCepResponseDTO buscarPorCep(@PathVariable("cep") String cep);
 }
-
