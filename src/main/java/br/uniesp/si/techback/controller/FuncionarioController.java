@@ -1,14 +1,9 @@
 package br.uniesp.si.techback.controller;
 
-import br.uniesp.si.techback.model.Funcionario;
+import br.uniesp.si.techback.dto.FuncionarioDTO;
 import br.uniesp.si.techback.service.FuncionarioService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +17,12 @@ public class FuncionarioController {
     private final FuncionarioService funcionarioService;
 
     @GetMapping
-    public List<Funcionario> listar() {
+    public List<FuncionarioDTO> listar() {
         return funcionarioService.listar();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Funcionario> buscarPorId(
+    public ResponseEntity<FuncionarioDTO> buscarPorId(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
@@ -36,19 +31,21 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public Funcionario incluir(
-            @Valid @RequestBody Funcionario funcionario) {
+    public ResponseEntity<FuncionarioDTO> incluir(
+            @Valid @RequestBody FuncionarioDTO funcionarioDTO) {
 
-        return funcionarioService.incluir(funcionario);
+        return ResponseEntity.ok(
+                funcionarioService.incluir(funcionarioDTO)
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Funcionario> atualizar(
+    public ResponseEntity<FuncionarioDTO> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody Funcionario funcionario) {
+            @Valid @RequestBody FuncionarioDTO funcionarioDTO) {
 
         return ResponseEntity.ok(
-                funcionarioService.atualizar(id, funcionario)
+                funcionarioService.atualizar(id, funcionarioDTO)
         );
     }
 
@@ -61,4 +58,3 @@ public class FuncionarioController {
         return ResponseEntity.noContent().build();
     }
 }
-

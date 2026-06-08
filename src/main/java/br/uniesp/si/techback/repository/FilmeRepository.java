@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+//jpql
 @Repository
 public interface FilmeRepository extends JpaRepository<Filme, Long> {
 

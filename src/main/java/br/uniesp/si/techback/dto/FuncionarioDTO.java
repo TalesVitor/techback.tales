@@ -1,27 +1,18 @@
-package br.uniesp.si.techback.model;
+package br.uniesp.si.techback.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "funcionarios")
-public class Funcionario {
+public class FuncionarioDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Nome é obrigatório")
@@ -44,4 +35,3 @@ public class Funcionario {
 
     private String uf;
 }
-
