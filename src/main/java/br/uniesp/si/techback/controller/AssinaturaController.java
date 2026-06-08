@@ -28,6 +28,13 @@ public class AssinaturaController {
         return assinaturaService.buscarPorStatus(status);
     }
 
+    @GetMapping("/relatorio/planos")
+    public ResponseEntity<List<Object[]>> contarPorPlano() {
+        return ResponseEntity.ok(
+                assinaturaService.contarAssinaturasAtivasPorPlano()
+        );
+    }
+
     @PostMapping
     public ResponseEntity<AssinaturaDTO> criar(
             @Valid @RequestBody AssinaturaDTO dto) {
