@@ -15,10 +15,10 @@ public interface AssinaturaRepository
 
     //Contar assinaturas ativas
     @Query("""
-    SELECT a.plano.nome, COUNT(a)
-    FROM Assinatura a
-    WHERE a.status = 'ATIVA'
-    GROUP BY a.plano.nome
-""")
-        List<Object[]> countAssinaturasAtivasPorPlano();
+            SELECT a.plano.codigo, COUNT(a)
+            FROM Assinatura a
+            WHERE a.status = 'ATIVA'
+            GROUP BY a.plano.codigo
+            """)
+    List<Object[]> countAssinaturasAtivasPorPlano();
 }
